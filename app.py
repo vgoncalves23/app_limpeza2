@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import requests
 import streamlit as st
+#teste
 
 # --- CONFIGURAÇÃO DO TELEGRAM ---
 TELEGRAM_BOT_TOKEN = "8829625966:AAGkEGAlPbgWzLozilGVyK8N6dpZSZryjGU"
