@@ -1,8 +1,13 @@
+import os
 from datetime import datetime, timedelta
 import requests
 
-TELEGRAM_BOT_TOKEN = "8829625966:AAGkEGAlPbgWzLozilGVyK8N6dpZSZryjGU"
-TELEGRAM_CHAT_ID = "-5578794876"
+# Variáveis de ambiente com fallback para os valores diretos
+TELEGRAM_BOT_TOKEN = os.getenv(
+    "TELEGRAM_BOT_TOKEN", "8829625966:AAGkEGAlPbgWzLozilGVyK8N6dpZSZryjGU"
+)
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "-5578794876")
+
 DATA_INICIO_ESCALA = datetime(2026, 10, 21)
 PESSOAS_ESCALA = ["Malu", "Angélica", "Luísa"]
 
@@ -14,7 +19,13 @@ def enviar_mensagem(texto):
         "text": texto,
         "parse_mode": "Markdown",
     }
-    requests.post(url, json=payload)
+    response = requests.post(url, json=payload)
+
+    # Imprime no log se o Telegram aceitou ou recusou a mensagem
+    if response.status_code == 200:
+        print("✅ Mensagem enviada com sucesso para o Telegram!")
+    else:
+        print(f"❌ Erro ao enviar mensagem ({response.status_code}): {response.text}")
 
 
 # --- AJUSTES E CÁLCULOS ---
@@ -27,11 +38,11 @@ semana_idx = 0 if dias_decorridos < 0 else dias_decorridos // 7
 responsavel = PESSOAS_ESCALA[semana_idx % len(PESSOAS_ESCALA)]
 
 # --- BLOCO DE LOGS ---
-print(f"--- DIAGNÓSTICO DE EXECUÇÃO ---")
+print("--- DIAGNÓSTICO DE EXECUÇÃO ---")
 print(f"Data/Hora ajustada (Brasília): {data_hoje}")
 print(f"Dia da semana (0=Seg, 6=Dom): {dia_semana}")
 print(f"Responsável calculado: {responsavel}")
-print(f"--------------------------------")
+print("--------------------------------")
 
 
 # --- BLOCO DA MALU ---
@@ -39,15 +50,15 @@ if responsavel == "Malu":
     # Alerta 1 (Lembrete de Lixo)
     if dia_semana in [0, 3, 4, 5, 6]:
         msg = (
-            f"🗑️ *Oi eu sou o Faxinometro, estou fazendo um teste! Desculpe transtorno*\n\n"
-            f"Atente-se para os lixos do banheiro e cozinha*!"
+            "🗑️ *Oi eu sou o Faxinômetro, estou fazendo um teste! Desculpe o transtorno*\n\n"
+            "Atente-se para os lixos do banheiro e cozinha!"
         )
         enviar_mensagem(msg)
 
     # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [1]:
+    if dia_semana in [1, 6]:
         msg = (
-            f"🚨 *Aviso de Fim de Escala!*\n\n"
+            "🚨 *Aviso de Fim de Escala!*\n\n"
             f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior, *{responsavel}*!"
         )
         enviar_mensagem(msg)
@@ -57,7 +68,7 @@ elif responsavel == "Angélica":
     # Alerta 1 (Lembrete de Lixo)
     if dia_semana in [0, 3, 4, 5, 6]:
         msg = (
-            f"🗑️ *Lembrete de Lixo Angélica!*\n\n"
+            "🗑️ *Lembrete de Lixo Angélica!*\n\n"
             f"Atente-se para os lixos do banheiro e cozinha, *{responsavel}*!"
         )
         enviar_mensagem(msg)
@@ -65,7 +76,7 @@ elif responsavel == "Angélica":
     # Alerta 2 (Fim de Escala / Lixo maior)
     if dia_semana in [1, 6]:
         msg = (
-            f"🚨 *Aviso de Fim de Escala!*\n\n"
+            "🚨 *Aviso de Fim de Escala!*\n\n"
             f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior, *{responsavel}*!"
         )
         enviar_mensagem(msg)
@@ -75,7 +86,7 @@ elif responsavel == "Luísa":
     # Alerta 1 (Lembrete de Lixo)
     if dia_semana in [0, 3, 4, 5, 6]:
         msg = (
-            f"🗑️ *Lembrete de Lixo Luísa!*\n\n"
+            "🗑️ *Lembrete de Lixo Luísa!*\n\n"
             f"Atente-se para os lixos do banheiro e cozinha, *{responsavel}*!"
         )
         enviar_mensagem(msg)
@@ -83,7 +94,7 @@ elif responsavel == "Luísa":
     # Alerta 2 (Fim de Escala / Lixo maior)
     if dia_semana in [1, 6]:
         msg = (
-            f"🚨 *Aviso de Fim de Escala!*\n\n"
+            "🚨 *Aviso de Fim de Escala!*\n\n"
             f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior, *{responsavel}*!"
         )
         enviar_mensagem(msg)
