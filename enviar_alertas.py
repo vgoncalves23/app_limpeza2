@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import requests
 
 TELEGRAM_BOT_TOKEN = "8829625966:AAGkEGAlPbgWzLozilGVyK8N6dpZSZryjGU"
-TELEGRAM_CHAT_ID = "-5515758898"
+TELEGRAM_CHAT_ID = "-5578794876"
 DATA_INICIO_ESCALA = datetime(2026, 10, 21)
 PESSOAS_ESCALA = ["Malu", "Angélica", "Luísa"]
 
@@ -17,8 +17,9 @@ def enviar_mensagem(texto):
     requests.post(url, json=payload)
 
 
-# Ajusta a hora UTC para o Horário de Brasília (UTC-3)
-data_hoje = datetime.utcnow() - timedelta(hours=3)
+# --- AJUSTES E CÁLCULOS ---
+data_utc = datetime.utcnow()
+data_hoje = data_utc - timedelta(hours=3)  # Ajusta para Horário de Brasília (UTC-3)
 hora_atual = data_hoje.hour  # Pega a hora atual (0 a 23)
 dia_semana = data_hoje.weekday()  # 0=Segunda, 1=Terça, ..., 6=Domingo
 
@@ -26,6 +27,15 @@ dias_decorridos = (data_hoje - DATA_INICIO_ESCALA).days
 semana_idx = 0 if dias_decorridos < 0 else dias_decorridos // 7
 responsavel = PESSOAS_ESCALA[semana_idx % len(PESSOAS_ESCALA)]
 
+# --- BLOCO DE LOGS (Para ver no GitHub Actions) ---
+print(f"--- DIAGNÓSTICO DE EXECUÇÃO ---")
+print(f"Data/Hora UTC crua: {data_utc}")
+print(f"Data/Hora ajustada (Brasília): {data_hoje}")
+print(f"Hora atual extraída: {hora_atual}")
+print(f"Dia da semana (0=Seg, 6=Dom): {dia_semana}")
+print(f"Dias decorridos desde o início: {dias_decorridos}")
+print(f"Responsável calculado: {responsavel}")
+print(f"--------------------------------")
 
 
 # --- BLOCO DA MALU ---
