@@ -28,7 +28,7 @@ st.set_page_config(
     page_title="Faxinômetro", page_icon="🧹", layout="centered"
 )
 
-# Exibindo a imagem centralizada no topo do app (com largura de 350 pixels para ficar elegante)
+# Exibindo a imagem centralizada no topo do app
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     try:
@@ -51,12 +51,18 @@ if dias_decorridos < 0:
 else:
     semana_atual_idx = dias_decorridos // 7
 
-responsavel_atual = PESSOAS_ESCALA[semana_atual_idx % len(PESSOAS_ESCALA)]
+responsavel_padrao = PESSOAS_ESCALA[semana_atual_idx % len(PESSOAS_ESCALA)]
 
 inicio_semana_atual = DATA_INICIO_ESCALA + timedelta(
     days=semana_atual_idx * 7
 )
 fim_semana_atual = inicio_semana_atual + timedelta(days=6)
+
+# Estado para controlar trocas manuais de responsável nesta semana
+if "responsavel_customizado" not in st.session_state:
+    st.session_state["responsavel_customizado"] = responsavel_padrao
+
+responsavel_atual = st.session_state["responsavel_customizado"]
 
 if "checklist" not in st.session_state:
     st.session_state["checklist"] = [
@@ -75,9 +81,40 @@ with aba_hoje:
     st.markdown(
         f"### Período Atual: **{inicio_semana_atual.strftime('%d/%m')} a {fim_semana_atual.strftime('%d/%m/%Y')}**"
     )
-    st.success(
-        f"### 🧹 Responsável de quarta a terça-feira: **{responsavel_atual}**"
-    )
+    st.success(f"### 🧹 Responsável nesta semana: **{responsavel_atual}**")
+
+    st.markdown("---")
+
+    # --- SEÇÃO DE TROCA DE RESPONSÁVEL ---
+    with st.expander("🔄 Precisa trocar de pessoa esta semana?"):
+        nova_pessoa = st.selectbox(
+            "Selecionar novo responsável:",
+            options=PESSOAS_ESCALA,
+            index=PESSOAS_ESCALA.index(responsavel_atual),
+            key="sel_novo_resp",
+        )
+
+        if nova_pessoa != responsavel_atual:
+            if st.button("Aplicar Troca e Notificar Telegram"):
+                antigo_resp = responsavel_atual
+                st.session_state["responsavel_customizado"] = nova_pessoa
+
+                # Envio automático da notificação para o Telegram
+                msg_troca = (
+                    f"🔄 *Troca Automática na Escala de Limpeza!*\n\n"
+                    f"• *Anterior:* {antigo_resp}\n"
+                    f"• *Novo Responsável:* *{nova_pessoa}*\n"
+                    f"• *Período:* {inicio_semana_atual.strftime('%d/%m')} a {fim_semana_atual.strftime('%d/%m')}\n\n"
+                    f"✨ A escala foi atualizada no Faxinômetro!"
+                )
+                enviar_notificacao_telegram(msg_troca)
+
+                st.success(
+                    f"Responsável alterado para **{nova_pessoa}** e notificação enviada!"
+                )
+                st.rerun()
+        else:
+            st.info("A pessoa selecionada já é a responsável atual da semana.")
 
     st.markdown("---")
     st.info(
@@ -109,7 +146,7 @@ with aba_escala_semana:
 with aba_checklist:
     st.subheader("✅ Checklist de Limpeza Semanal")
     st.write(
-        "Marque abaixo as tarefas conforme forem concluídas durante a semana:"
+        f"Marque abaixo as tarefas conforme forem concluídas por **{responsavel_atual}**:"
     )
 
     st.markdown("---")
