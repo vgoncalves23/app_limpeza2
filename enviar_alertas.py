@@ -63,7 +63,7 @@ print("--------------------------------")
 # --- BLOCO DA MALU ---
 if responsavel == "Malu":
     # Alerta 1 (Lembrete de Lixo)
-    if dia_semana in [0, 3, 4, 5, 6]:
+    if dia_semana in [1]:
         msg = (
             "🗑️ *Oi eu sou o Faxinômetro, estou fazendo um teste! Desculpe o transtorno*\n\n"
             "Atente-se para os lixos do banheiro e cozinha!"
@@ -71,7 +71,7 @@ if responsavel == "Malu":
         enviar_mensagem(msg)
 
     # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [1, 6]:
+    if dia_semana in [6]:
         msg = (
             "🚨 *Aviso de Fim de Escala!*\n\n"
             f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior, *{responsavel}*!"
@@ -81,7 +81,7 @@ if responsavel == "Malu":
 # --- BLOCO DA ANGÉLICA ---
 elif responsavel == "Angélica":
     # Alerta 1 (Lembrete de Lixo)
-    if dia_semana in [0, 3, 4, 5, 6]:
+    if dia_semana in [1]:
         msg = (
             "🗑️ *Lembrete de Lixo Angélica!*\n\n"
             f"Atente-se para os lixos do banheiro e cozinha, *{responsavel}*!"
@@ -89,7 +89,7 @@ elif responsavel == "Angélica":
         enviar_mensagem(msg)
 
     # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [1, 6]:
+    if dia_semana in [6]:
         msg = (
             "🚨 *Aviso de Fim de Escala!*\n\n"
             f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior, *{responsavel}*!"
@@ -99,7 +99,7 @@ elif responsavel == "Angélica":
 # --- BLOCO DA LUÍSA ---
 elif responsavel == "Luísa":
     # Alerta 1 (Lembrete de Lixo)
-    if dia_semana in [0, 3, 4, 5, 6]:
+    if dia_semana in [1]:
         msg = (
             "🗑️ *Lembrete de Lixo Luísa!*\n\n"
             f"Atente-se para os lixos do banheiro e cozinha, *{responsavel}*!"
@@ -107,7 +107,7 @@ elif responsavel == "Luísa":
         enviar_mensagem(msg)
 
     # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [1, 6]:
+    if dia_semana in [6]:
         msg = (
             "🚨 *Aviso de Fim de Escala!*\n\n"
             f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior, *{responsavel}*!"
