@@ -29,17 +29,17 @@ responsavel = PESSOAS_ESCALA[semana_idx % len(PESSOAS_ESCALA)]
 
 
 # --- BLOCO DA MALU ---
-if responsavel == "Malu" and hora_atual == 10:
+if responsavel == "Malu" and hora_atual == 11:
     # Alerta 1 (Lembrete de Lixo)
     if dia_semana in [0, 3, 4, 5, 6]:
         msg = (
-            f"🗑️ *Lembrete de Lixo Malu!*\n\n"
-            f"Atente-se para os lixos do banheiro e cozinha, *{responsavel}*!"
+            f"🗑️ *Oi eu sou o Faxinometro estou fazendo um Lembrete Teste Automatico!*\n\n"
+            f"Atente-se para os lixos do banheiro e cozinha*!"
         )
         enviar_mensagem(msg)
 
     # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [1, 6]:
+    if dia_semana in [1]:
         msg = (
             f"🚨 *Aviso de Fim de Escala!*\n\n"
             f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior, *{responsavel}*!"
