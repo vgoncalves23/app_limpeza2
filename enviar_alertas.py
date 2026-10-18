@@ -40,6 +40,6 @@ if dia_semana in [0, 3, 4, 5, 6]:
 if dia_semana in[1, 6]:
     msg = (
         f"🚨 *Aviso de Fim de Escala!*\n\n"
-        f"pipipip desça com o lixo maior, *{responsavel}*!"
+        f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior, *{responsavel}*!"
     )
     enviar_mensagem(msg)
