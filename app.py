@@ -28,7 +28,7 @@ st.set_page_config(
     page_title="Escala de Limpeza", page_icon="🧹", layout="centered"
 )
 
-st.title("🧹 Escala de Limpeza da Casa")
+st.title("🧹 Faxinômetro")
 
 # Configuração da Escala Fixa (de quarta a terça-feira)
 DATA_INICIO_ESCALA = datetime(2026, 10, 21)  # Quarta-feira, 21/10/2026
