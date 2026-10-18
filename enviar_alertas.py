@@ -6,7 +6,7 @@ import requests
 TELEGRAM_BOT_TOKEN = os.getenv(
     "TELEGRAM_BOT_TOKEN", "8829625966:AAGkEGAlPbgWzLozilGVyK8N6dpZSZryjGU"
 )
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "-5578794876")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "-5515758898")
 
 DATA_INICIO_ESCALA = datetime(2026, 10, 21)
 PESSOAS_ESCALA = ["Malu", "Angélica", "Luísa"]
