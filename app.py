@@ -195,10 +195,3 @@ with aba_checklist:
         elif not status and estado_anterior:
             st.session_state["checklist"][idx]["feita"] = False
             st.rerun()
-
-    st.markdown("---")
-    if st.button("🔄 Reiniciar Checklist para a Nova Semana"):
-        for item in st.session_state["checklist"]:
-            item["feita"] = False
-        st.success("Checklist resetado para a próxima semana!")
-        st.rerun()
