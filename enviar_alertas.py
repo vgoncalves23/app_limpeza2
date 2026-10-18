@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import requests
 
 TELEGRAM_BOT_TOKEN = "8829625966:AAGkEGAlPbgWzLozilGVyK8N6dpZSZryjGU"
-TELEGRAM_CHAT_ID = "-5515758898"
+TELEGRAM_CHAT_ID = "-5578794876"
 DATA_INICIO_ESCALA = datetime(2026, 10, 21)
 PESSOAS_ESCALA = ["Malu", "Angélica", "Luísa"]
 
@@ -29,7 +29,7 @@ responsavel = PESSOAS_ESCALA[semana_idx % len(PESSOAS_ESCALA)]
 dia_semana = data_hoje.weekday()  # 0=Segunda, 1=Terça, 3=Quinta, 5=Sábado
 
 # Quinta (3), Sábado (5) ou Segunda (0) -> Alerta 1
-if dia_semana in [0, 3, 4, 5]:
+if dia_semana in [0, 3, 4, 5, 6]:
     msg = (
         f"🗑️ *Lembrete de Lixo!*\n\n"
         f"Atente-se para os lixos do banheiro e cozinha, *{responsavel}*!"
@@ -37,7 +37,7 @@ if dia_semana in [0, 3, 4, 5]:
     enviar_mensagem(msg)
 
 # Terça (1) -> Alerta 2
-elif dia_semana in[1, 4]:
+elif dia_semana in[1, 6]:
     msg = (
         f"🚨 *Aviso de Fim de Escala!*\n\n"
         f"pipipip desça com o lixo maior, *{responsavel}*!"
