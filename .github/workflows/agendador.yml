@@ -2,8 +2,10 @@ name: Enviar Alertas Telegram
 
 on:
   schedule:
+    - cron: '0 12 * * *'  # Roda todos os dias às 12:00 UTC (09:00 Horário de Brasília)
     - cron: '0 17 * * *'  # Roda todos os dias às 17:00 UTC (14:00 Horário de Brasília)
-  workflow_dispatch:
+    - cron: '0 21 * * *'  # Exemplo opcional: Roda às 18:00 Horário de Brasília
+  workflow_dispatch:      # Permite que você clique em "Run workflow" manualmente quando quiser
 
 jobs:
   alertas:
