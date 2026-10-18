@@ -25,10 +25,18 @@ def enviar_notificacao_telegram(mensagem):
 
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(
-    page_title="Escala de Limpeza", page_icon="🧹", layout="centered"
+    page_title="Faxinômetro", page_icon="🧹", layout="centered"
 )
 
-st.title("🧹 Faxinômetro")
+# Exibindo a imagem centralizada no topo do app (com largura de 350 pixels para ficar elegante)
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    try:
+        st.image("logo.jpg", width=350)
+    except Exception:
+        st.title("🧹 Faxinômetro")
+
+st.markdown("<hr>", unsafe_allow_html=True)
 
 # Configuração da Escala Fixa (de quarta a terça-feira)
 DATA_INICIO_ESCALA = datetime(2026, 10, 21)  # Quarta-feira, 21/10/2026
