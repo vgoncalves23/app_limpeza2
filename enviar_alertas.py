@@ -20,6 +20,8 @@ def enviar_mensagem(texto):
 # Ajusta a hora UTC para o Horário de Brasília (UTC-3)
 data_hoje = datetime.utcnow() - timedelta(hours=3)
 
+print(data_hoje)
+
 dias_decorridos = (data_hoje - DATA_INICIO_ESCALA).days
 semana_idx = 0 if dias_decorridos < 0 else dias_decorridos // 7
 responsavel = PESSOAS_ESCALA[semana_idx % len(PESSOAS_ESCALA)]
