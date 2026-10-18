@@ -28,10 +28,25 @@ def enviar_mensagem(texto):
         print(f"❌ Erro ao enviar mensagem ({response.status_code}): {response.text}")
 
 
+
+
 # --- AJUSTES E CÁLCULOS ---
 data_utc = datetime.utcnow()
 data_hoje = data_utc - timedelta(hours=3)  # Ajusta para Horário de Brasília (UTC-3)
 dia_semana = data_hoje.weekday()  # 0=Segunda, 1=Terça, ..., 6=Domingo
+
+'''
+# --- EXCEÇÕES MANUAIS DE ÚLTIMA HORA (Opcional) ---
+# Se estiver entre 04/11/2026 e 10/11/2026, força a Angélica
+if datetime(2026, 11, 4) <= data_hoje <= datetime(2026, 11, 10):
+    responsavel = "Angélica"
+else:
+    # Cálculo automático normal
+    dias_decorridos = (data_hoje - DATA_INICIO_ESCALA).days
+    semana_idx = 0 if dias_decorridos < 0 else dias_decorridos // 7
+    responsavel = PESSOAS_ESCALA[semana_idx % len(PESSOAS_ESCALA)]
+
+'''
 
 dias_decorridos = (data_hoje - DATA_INICIO_ESCALA).days
 semana_idx = 0 if dias_decorridos < 0 else dias_decorridos // 7
