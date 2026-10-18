@@ -1,10 +1,13 @@
 from datetime import datetime, timedelta
+import json
+import os
 import requests
 import streamlit as st
 
 # --- CONFIGURAÇÃO DO TELEGRAM ---
 TELEGRAM_BOT_TOKEN = "8829625966:AAGkEGAlPbgWzLozilGVyK8N6dpZSZryjGU"
 TELEGRAM_CHAT_ID = "-5515758898"
+ARQUIVO_DADOS = "dados_escala.json"
 
 
 def enviar_notificacao_telegram(mensagem):
@@ -21,6 +24,26 @@ def enviar_notificacao_telegram(mensagem):
         return response.status_code == 200
     except Exception as e:
         return False
+
+
+def carregar_dados():
+    """Carrega as informações salvas do arquivo JSON."""
+    if os.path.exists(ARQUIVO_DADOS):
+        try:
+            with open(ARQUIVO_DADOS, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+
+def salvar_dados(dados):
+    """Salva as informações no arquivo JSON."""
+    try:
+        with open(ARQUIVO_DADOS, "w", encoding="utf-8") as f:
+            json.dump(dados, f, ensure_ascii=False, indent=4)
+    except Exception as e:
+        st.error(f"Erro ao salvar dados: {e}")
 
 
 # --- CONFIGURAÇÃO DA PÁGINA ---
@@ -57,19 +80,25 @@ inicio_semana_atual = DATA_INICIO_ESCALA + timedelta(
     days=semana_atual_idx * 7
 )
 fim_semana_atual = inicio_semana_atual + timedelta(days=6)
+chave_semana = inicio_semana_atual.strftime("%Y-%m-%d")
 
-# Estado para controlar trocas manuais de responsável nesta semana
-if "responsavel_customizado" not in st.session_state:
-    st.session_state["responsavel_customizado"] = responsavel_padrao
+# Carrega os dados persistidos
+dados_salvos = carregar_dados()
 
-responsavel_atual = st.session_state["responsavel_customizado"]
+# Verifica se há um responsável customizado para a semana atual
+responsavel_atual = dados_salvos.get("trocas_semana", {}).get(
+    chave_semana, responsavel_padrao
+)
 
-if "checklist" not in st.session_state:
-    st.session_state["checklist"] = [
+# Checklist persistido
+if "checklist_dados" not in dados_salvos:
+    dados_salvos["checklist_dados"] = [
         {"nome": "Limpeza geral casa", "feita": False},
         {"nome": "Limpeza banheiro", "feita": False},
         {"nome": "Descer lixo maior", "feita": False},
     ]
+
+checklist = dados_salvos["checklist_dados"]
 
 # --- ABAS DA APLICAÇÃO ---
 aba_hoje, aba_escala_semana, aba_checklist = st.tabs(
@@ -97,7 +126,12 @@ with aba_hoje:
         if nova_pessoa != responsavel_atual:
             if st.button("Aplicar Troca e Notificar Telegram"):
                 antigo_resp = responsavel_atual
-                st.session_state["responsavel_customizado"] = nova_pessoa
+
+                # Atualiza e salva no arquivo JSON
+                if "trocas_semana" not in dados_salvos:
+                    dados_salvos["trocas_semana"] = {}
+                dados_salvos["trocas_semana"][chave_semana] = nova_pessoa
+                salvar_dados(dados_salvos)
 
                 # Envio automático da notificação para o Telegram
                 msg_troca = (
@@ -110,7 +144,7 @@ with aba_hoje:
                 enviar_notificacao_telegram(msg_troca)
 
                 st.success(
-                    f"Responsável alterado para **{nova_pessoa}** e notificação enviada!"
+                    f"Responsável alterado para **{nova_pessoa}** e salvo com sucesso!"
                 )
                 st.rerun()
         else:
@@ -152,12 +186,10 @@ with aba_checklist:
     st.markdown("---")
 
     todos_cumpridos_antes = (
-        all(item["feita"] for item in st.session_state["checklist"])
-        if st.session_state["checklist"]
-        else False
+        all(item["feita"] for item in checklist) if checklist else False
     )
 
-    for idx, item in enumerate(st.session_state["checklist"]):
+    for idx, item in enumerate(checklist):
         estado_anterior = item["feita"]
 
         status = st.checkbox(
@@ -165,12 +197,13 @@ with aba_checklist:
         )
 
         if status and not estado_anterior:
-            st.session_state["checklist"][idx]["feita"] = True
+            checklist[idx]["feita"] = True
+            dados_salvos["checklist_dados"] = checklist
+            salvar_dados(dados_salvos)
+
             data_hora_conclusao = datetime.now().strftime("%d/%m/%Y às %H:%M")
 
-            todos_cumpridos_agora = all(
-                t["feita"] for t in st.session_state["checklist"]
-            )
+            todos_cumpridos_agora = all(t["feita"] for t in checklist)
 
             if todos_cumpridos_agora and not todos_cumpridos_antes:
                 msg_telegram = (
@@ -193,5 +226,7 @@ with aba_checklist:
             st.rerun()
 
         elif not status and estado_anterior:
-            st.session_state["checklist"][idx]["feita"] = False
+            checklist[idx]["feita"] = False
+            dados_salvos["checklist_dados"] = checklist
+            salvar_dados(dados_salvos)
             st.rerun()
