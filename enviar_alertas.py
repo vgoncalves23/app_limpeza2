@@ -35,7 +35,7 @@ if dia_semana in [0, 3, 4, 5]:
     enviar_mensagem(msg)
 
 # Terça (1) -> Alerta 2
-elif dia_semana in[1, 4] :
+elif dia_semana in[1, 4]:
     msg = (
         f"🚨 *Aviso de Fim de Escala!*\n\n"
         f"pipipip desça com o lixo maior, *{responsavel}*!"
