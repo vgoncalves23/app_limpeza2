@@ -63,7 +63,7 @@ print("--------------------------------")
 # --- BLOCO DA MALU ---
 if responsavel == "Malu":
     # Alerta 1 (Lembrete de Lixo)
-    if dia_semana in [1]:
+    if dia_semana in [6]:
         msg = (
             "🗑️ *Oi eu sou o Faxinômetro, estou fazendo um teste! Desculpe o transtorno*\n\n"
             "Atente-se para os lixos do banheiro e cozinha!"
@@ -71,10 +71,10 @@ if responsavel == "Malu":
         enviar_mensagem(msg)
 
     # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [6]:
+    if dia_semana in [1]:
         msg = (
             "🚨 *Aviso de Fim de Escala!*\n\n"
-            f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior, *{responsavel}*!"
+            f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior"
         )
         enviar_mensagem(msg)
 
@@ -83,8 +83,8 @@ elif responsavel == "Angélica":
     # Alerta 1 (Lembrete de Lixo)
     if dia_semana in [1]:
         msg = (
-            "🗑️ *Lembrete de Lixo Angélica!*\n\n"
-            f"Atente-se para os lixos do banheiro e cozinha, *{responsavel}*!"
+            "🗑️ *Lembrete de Lixo*\n\n"
+            f"Atente-se para os lixos do banheiro e cozinha!"
         )
         enviar_mensagem(msg)
 
@@ -92,7 +92,7 @@ elif responsavel == "Angélica":
     if dia_semana in [6]:
         msg = (
             "🚨 *Aviso de Fim de Escala!*\n\n"
-            f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior, *{responsavel}*!"
+            f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
         )
         enviar_mensagem(msg)
 
@@ -102,7 +102,7 @@ elif responsavel == "Luísa":
     if dia_semana in [1]:
         msg = (
             "🗑️ *Lembrete de Lixo Luísa!*\n\n"
-            f"Atente-se para os lixos do banheiro e cozinha, *{responsavel}*!"
+            f"Atente-se para os lixos do banheiro e cozinha!"
         )
         enviar_mensagem(msg)
 
@@ -110,6 +110,6 @@ elif responsavel == "Luísa":
     if dia_semana in [6]:
         msg = (
             "🚨 *Aviso de Fim de Escala!*\n\n"
-            f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior, *{responsavel}*!"
+            f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
         )
         enviar_mensagem(msg)
