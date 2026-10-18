@@ -27,7 +27,7 @@ responsavel = PESSOAS_ESCALA[semana_idx % len(PESSOAS_ESCALA)]
 dia_semana = data_hoje.weekday()  # 0=Segunda, 1=Terça, 3=Quinta, 5=Sábado
 
 # Quinta (3), Sábado (5) ou Segunda (0) -> Alerta 1
-if dia_semana in [0, 3, 5]:
+if dia_semana in [0, 3, 4, 5]:
     msg = (
         f"🗑️ *Lembrete de Lixo!*\n\n"
         f"Atente-se para os lixos do banheiro e cozinha, *{responsavel}*!"
