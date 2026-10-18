@@ -20,26 +20,22 @@ def enviar_mensagem(texto):
 # --- AJUSTES E CÁLCULOS ---
 data_utc = datetime.utcnow()
 data_hoje = data_utc - timedelta(hours=3)  # Ajusta para Horário de Brasília (UTC-3)
-hora_atual = data_hoje.hour  # Pega a hora atual (0 a 23)
 dia_semana = data_hoje.weekday()  # 0=Segunda, 1=Terça, ..., 6=Domingo
 
 dias_decorridos = (data_hoje - DATA_INICIO_ESCALA).days
 semana_idx = 0 if dias_decorridos < 0 else dias_decorridos // 7
 responsavel = PESSOAS_ESCALA[semana_idx % len(PESSOAS_ESCALA)]
 
-# --- BLOCO DE LOGS (Para ver no GitHub Actions) ---
+# --- BLOCO DE LOGS ---
 print(f"--- DIAGNÓSTICO DE EXECUÇÃO ---")
-print(f"Data/Hora UTC crua: {data_utc}")
 print(f"Data/Hora ajustada (Brasília): {data_hoje}")
-print(f"Hora atual extraída: {hora_atual}")
 print(f"Dia da semana (0=Seg, 6=Dom): {dia_semana}")
-print(f"Dias decorridos desde o início: {dias_decorridos}")
 print(f"Responsável calculado: {responsavel}")
 print(f"--------------------------------")
 
 
 # --- BLOCO DA MALU ---
-if responsavel == "Malu" and hora_atual == 18:
+if responsavel == "Malu":
     # Alerta 1 (Lembrete de Lixo)
     if dia_semana in [0, 3, 4, 5, 6]:
         msg = (
