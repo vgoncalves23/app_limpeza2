@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import requests
 import streamlit as st
-#teste
 
 # --- CONFIGURAÇÃO DO TELEGRAM ---
 TELEGRAM_BOT_TOKEN = "8829625966:AAGkEGAlPbgWzLozilGVyK8N6dpZSZryjGU"
@@ -19,13 +18,8 @@ def enviar_notificacao_telegram(mensagem):
 
     try:
         response = requests.post(url, json=payload)
-        if response.status_code == 200:
-            return True
-        else:
-            st.error(f"Erro ao enviar Telegram: {response.text}")
-            return False
+        return response.status_code == 200
     except Exception as e:
-        st.error(f"Erro de conexão com o Telegram: {e}")
         return False
 
 
@@ -42,23 +36,20 @@ PESSOAS_ESCALA = ["Malu", "Angélica", "Luísa"]
 
 data_hoje = datetime.now()
 
-# Cálculo de semanas decorridas a partir da data inicial
+# Cálculo de semanas decorridas
 dias_decorridos = (data_hoje - DATA_INICIO_ESCALA).days
 if dias_decorridos < 0:
     semana_atual_idx = 0
 else:
     semana_atual_idx = dias_decorridos // 7
 
-# Responsável da semana atual
 responsavel_atual = PESSOAS_ESCALA[semana_atual_idx % len(PESSOAS_ESCALA)]
 
-# Datas de início (quarta) e fim (terça) da semana atual
 inicio_semana_atual = DATA_INICIO_ESCALA + timedelta(
     days=semana_atual_idx * 7
 )
 fim_semana_atual = inicio_semana_atual + timedelta(days=6)
 
-# Estado de Sessão para o Checklist Fixo
 if "checklist" not in st.session_state:
     st.session_state["checklist"] = [
         {"nome": "Limpeza geral casa", "feita": False},
@@ -71,7 +62,7 @@ aba_hoje, aba_escala_semana, aba_checklist = st.tabs(
     ["🌟 Responsável Atual", "📅 Escala Semanal (Fixa)", "✅ Checklist"]
 )
 
-# --- ABA 1: RESPONSÁVEL ATUAL & ALERTAS ESPECÍFICOS ---
+# --- ABA 1: RESPONSÁVEL ATUAL ---
 with aba_hoje:
     st.markdown(
         f"### Período Atual: **{inicio_semana_atual.strftime('%d/%m')} a {fim_semana_atual.strftime('%d/%m/%Y')}**"
@@ -81,69 +72,19 @@ with aba_hoje:
     )
 
     st.markdown("---")
-    st.subheader("🔔 Disparar Alertas Específicos no Telegram")
-
-    dia_semana_atual = data_hoje.weekday()  # 0=Seg, 1=Ter, 3=Qui, 5=Sáb...
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        # Alerta 1: Quintas (3), Sábados (5) e Segundas (0)
-        eh_dia_lixo_geral = dia_semana_atual in [0, 3, 5]
-        if eh_dia_lixo_geral:
-            st.info("💡 Hoje é dia de retirar os lixos (Alerta 1 recomendado).")
-
-        if st.button("🗑️ Enviar Alerta de Lixos"):
-            msg_lixo = (
-                f"🗑️ *Lembrete de Lixo!*\n\n"
-                f"Atente-se para os lixos do banheiro e cozinha, *{responsavel_atual}*!"
-            )
-            if enviar_notificacao_telegram(msg_lixo):
-                st.success("Alerta de lixos enviado no Telegram!")
-
-    with col2:
-        # Alerta 2: Terças-feiras (1)
-        eh_terca = dia_semana_atual == 1
-        if eh_terca:
-            st.warning("⚠️ Hoje é terça-feira (Alerta 2 recomendado).")
-
-        if st.button("🚨 Enviar Alerta de Terça"):
-            msg_terca = (
-                f"🚨 *Aviso de Fim de Escala!*\n\n"
-                f"pipipip desça com o lixo maior, *{responsavel_atual}*!"
-            )
-            if enviar_notificacao_telegram(msg_terca):
-                st.success("Alerta de terça enviado no Telegram!")
-
-    # Verificação automática de pendências na terça-feira
-    pendentes = [
-        t["nome"] for t in st.session_state["checklist"] if not t["feita"]
-    ]
-    if eh_terca and pendentes:
-        st.markdown("---")
-        st.warning(
-            "⚠️ **Atenção!** Hoje é terça-feira e ainda existem tarefas pendentes no checklist!"
-        )
-        if st.button("📲 Enviar Alerta Geral de Pendências"):
-            lista_pendentes = "\n".join([f"• {p}" for p in pendentes])
-            msg_alerta = (
-                f"🚨 *Alerta de Fim de Escala (Terça-feira)!*\n\n"
-                f"Atenção *{responsavel_atual}*, hoje é o último dia da sua escala e ainda há pendências:\n\n"
-                f"{lista_pendentes}"
-            )
-            if enviar_notificacao_telegram(msg_alerta):
-                st.info("Alerta de pendências enviado!")
+    st.info(
+        "🤖 **Alertas Automáticos:** Os lembretes de lixo e término de escala são enviados diretamente no grupo do Telegram todos os dias às 14:00."
+    )
 
 # --- ABA 2: ESCALA SEMANAL FIXA ---
 with aba_escala_semana:
     st.subheader("📅 Tabela de Escala (Quarta a Terça-feira)")
 
     tabela_escala = []
-    for i in range(12):  # Mostra 12 semanas
+    for i in range(12):
         inicio_periodo = DATA_INICIO_ESCALA + timedelta(days=i * 7)
         fim_periodo = inicio_periodo + timedelta(days=6)
         resp = PESSOAS_ESCALA[i % len(PESSOAS_ESCALA)]
-
         destaque = " (Atual)" if i == semana_atual_idx else ""
 
         tabela_escala.append(
@@ -178,7 +119,6 @@ with aba_checklist:
             item["nome"], value=item["feita"], key=f"chk_{idx}"
         )
 
-        # Se a tarefa foi marcada como concluída neste momento
         if status and not estado_anterior:
             st.session_state["checklist"][idx]["feita"] = True
             data_hora_conclusao = datetime.now().strftime("%d/%m/%Y às %H:%M")
@@ -188,7 +128,6 @@ with aba_checklist:
             )
 
             if todos_cumpridos_agora and not todos_cumpridos_antes:
-                # Alerta festivo com fogos de artifício no Telegram
                 msg_telegram = (
                     f"🎉 🎆 *TODOS OS CHECKLISTS CUMPRIDOS!* 🎆 🎉\n\n"
                     f"🧹 Parabéns *{responsavel_atual}*!\n"
@@ -197,7 +136,6 @@ with aba_checklist:
                     f"✨ Casa limpa e organizada! 👏✨"
                 )
             else:
-                # Notificação individual de item concluído
                 msg_telegram = (
                     f"✅ *Checklist Concluído!*\n\n"
                     f"• *Item:* {item['nome']}\n"
