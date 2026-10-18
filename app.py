@@ -85,7 +85,12 @@ chave_semana = inicio_semana_atual.strftime("%Y-%m-%d")
 # Carrega os dados persistidos
 dados_salvos = carregar_dados()
 
-# Verifica se há um responsável customizado para a semana atual
+# Verifica se há uma troca manual gravada para a semana atual
+tem_troca_manual = (
+    "trocas_semana" in dados_salvos
+    and chave_semana in dados_salvos["trocas_semana"]
+)
+
 responsavel_atual = dados_salvos.get("trocas_semana", {}).get(
     chave_semana, responsavel_padrao
 )
@@ -110,7 +115,15 @@ with aba_hoje:
     st.markdown(
         f"### Período Atual: **{inicio_semana_atual.strftime('%d/%m')} a {fim_semana_atual.strftime('%d/%m/%Y')}**"
     )
-    st.success(f"### 🧹 Responsável nesta semana: **{responsavel_atual}**")
+
+    if tem_troca_manual:
+        st.success(
+            f"### 🧹 Responsável nesta semana: **{responsavel_atual}** *(Troca Manual)*"
+        )
+    else:
+        st.success(
+            f"### 🧹 Responsável nesta semana: **{responsavel_atual}** *(Padrão da Escala)*"
+        )
 
     st.markdown("---")
 
@@ -149,6 +162,27 @@ with aba_hoje:
                 st.rerun()
         else:
             st.info("A pessoa selecionada já é a responsável atual da semana.")
+
+        # Botão para Restaurar a Escala Padrão se houver uma troca manual ativa
+        if tem_troca_manual:
+            st.markdown("---")
+            if st.button("↩️ Voltar ao Padrão da Escala Semanal"):
+                antigo_resp = responsavel_atual
+                del dados_salvos["trocas_semana"][chave_semana]
+                salvar_dados(dados_salvos)
+
+                msg_restaurar = (
+                    f"↩️ *Escala Restaurada para o Padrão!*\n\n"
+                    f"• *Responsável Padrão:* *{responsavel_padrao}*\n"
+                    f"• *Período:* {inicio_semana_atual.strftime('%d/%m')} a {fim_semana_atual.strftime('%d/%m')}\n\n"
+                    f"✨ A escala voltou à programação normal no Faxinômetro!"
+                )
+                enviar_notificacao_telegram(msg_restaurar)
+
+                st.success(
+                    f"Escala restaurada para o responsável padrão (**{responsavel_padrao}**)!"
+                )
+                st.rerun()
 
     st.markdown("---")
     st.info(
