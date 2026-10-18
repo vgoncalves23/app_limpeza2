@@ -63,7 +63,7 @@ print("--------------------------------")
 # --- BLOCO DA MALU ---
 if responsavel == "Malu":
     # Alerta 1 (Lembrete de Lixo)
-    if dia_semana in [6]:
+    if dia_semana in [6, 3, 5]:
         msg = (
             "🗑️ *Oi eu sou o Faxinômetro, estou fazendo um teste! Desculpe o transtorno*\n\n"
             "Atente-se para os lixos do banheiro e cozinha!"
@@ -71,7 +71,7 @@ if responsavel == "Malu":
         enviar_mensagem(msg)
 
     # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [1]:
+    if dia_semana in [0, 1]:
         msg = (
             "🚨 *Aviso de Fim de Escala!*\n\n"
             f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior"
@@ -89,7 +89,7 @@ elif responsavel == "Angélica":
         enviar_mensagem(msg)
 
     # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [6]:
+    if dia_semana in [0, 1]:
         msg = (
             "🚨 *Aviso de Fim de Escala!*\n\n"
             f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
@@ -107,7 +107,7 @@ elif responsavel == "Luísa":
         enviar_mensagem(msg)
 
     # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [6]:
+    if dia_semana in [0, 1]:
         msg = (
             "🚨 *Aviso de Fim de Escala!*\n\n"
             f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
