@@ -1,10 +1,8 @@
 name: Enviar Alertas Telegram
 
 on:
-  schedule:
-    - cron: '55 21 * * *'  # Roda às 21:55 UTC (18:55 Horário de Brasília)
-  workflow_dispatch:
-  repository_dispatch:     # <--- Adicione esta linha aqui para aceitar o cron-job.org
+  workflow_dispatch:     # Permite rodar manualmente no botão do GitHub
+  repository_dispatch:    # Permite o disparo vindo do cron-job.org
 
 jobs:
   alertas:
