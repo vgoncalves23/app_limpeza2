@@ -33,7 +33,7 @@ if responsavel == "Malu" and hora_atual == 11:
     # Alerta 1 (Lembrete de Lixo)
     if dia_semana in [0, 3, 4, 5, 6]:
         msg = (
-            f"🗑️ *Oi eu sou o Faxinometro, estou fazendo um Lembrete Teste Automatico!*\n\n"
+            f"🗑️ *Oi eu sou o Faxinometro, estou fazendo um teste! Desculpe transtorno*\n\n"
             f"Atente-se para os lixos do banheiro e cozinha*!"
         )
         enviar_mensagem(msg)
