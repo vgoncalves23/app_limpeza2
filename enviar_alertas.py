@@ -39,7 +39,7 @@ print(f"--------------------------------")
 
 
 # --- BLOCO DA MALU ---
-if responsavel == "Malu" and hora_atual == 11:
+if responsavel == "Malu" and hora_atual == 18:
     # Alerta 1 (Lembrete de Lixo)
     if dia_semana in [0, 3, 4, 5, 6]:
         msg = (
