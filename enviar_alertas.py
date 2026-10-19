@@ -46,7 +46,7 @@ print("--------------------------------")
 
 
 # --- MENSAGEM DE INÍCIO DE ESCALA NA QUARTA-FEIRA (Dia 2) ---
-if dia_semana == 0:
+if dia_semana == 2:
     msg_inicio = (
         f"🔄 *Nova Escala Iniciada!*\n\n"
         f"A responsável da semana é: *{responsavel}* ✨"
