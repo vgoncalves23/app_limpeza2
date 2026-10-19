@@ -28,25 +28,10 @@ def enviar_mensagem(texto):
         print(f"❌ Erro ao enviar mensagem ({response.status_code}): {response.text}")
 
 
-
-
 # --- AJUSTES E CÁLCULOS ---
 data_utc = datetime.utcnow()
 data_hoje = data_utc - timedelta(hours=3)  # Ajusta para Horário de Brasília (UTC-3)
-dia_semana = data_hoje.weekday()  # 0=Segunda, 1=Terça, ..., 6=Domingo
-
-'''
-# --- EXCEÇÕES MANUAIS DE ÚLTIMA HORA (Opcional) ---
-# Se estiver entre 04/11/2026 e 10/11/2026, força a Angélica
-if datetime(2026, 11, 4) <= data_hoje <= datetime(2026, 11, 10):
-    responsavel = "Angélica"
-else:
-    # Cálculo automático normal
-    dias_decorridos = (data_hoje - DATA_INICIO_ESCALA).days
-    semana_idx = 0 if dias_decorridos < 0 else dias_decorridos // 7
-    responsavel = PESSOAS_ESCALA[semana_idx % len(PESSOAS_ESCALA)]
-
-'''
+dia_semana = data_hoje.weekday()  # 0=Segunda, 1=Terça, 2=Quarta, 3=Quinta, 4=Sexta, 5=Sábado, 6=Domingo
 
 dias_decorridos = (data_hoje - DATA_INICIO_ESCALA).days
 semana_idx = 0 if dias_decorridos < 0 else dias_decorridos // 7
@@ -60,56 +45,63 @@ print(f"Responsável calculado: {responsavel}")
 print("--------------------------------")
 
 
-# --- BLOCO DA MALU ---
+# --- MENSAGEM DE INÍCIO DE ESCALA NA QUARTA-FEIRA (Dia 2) ---
+if dia_semana == 0:
+    msg_inicio = (
+        f"🔄 *Nova Escala Iniciada!*\n\n"
+        f"A responsável da semana é: *{responsavel}* ✨"
+    )
+    enviar_mensagem(msg_inicio)
+
+
+# --- BLOCOS DE ALERTAS POR RESPONSÁVEL ---
 if responsavel == "Malu":
-    # Alerta 1 (Lembrete de Lixo)
-    if dia_semana in [6, 3, 5]:
+    # Lembrete de Lixo (Quinta [3], Sábado [5] e Segunda [0])
+    if dia_semana in [3, 5, 0]:
         msg = (
-            "🗑️ *Oi eu sou o Faxinômetro, estou fazendo um teste! Desculpe o transtorno*\n\n"
+            f"🗑️ *Lembrete de Lixo ({responsavel})!*\n\n"
             "Atente-se para os lixos do banheiro e cozinha!"
         )
         enviar_mensagem(msg)
 
-    # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [0, 1]:
+    # Fim de Escala / Lixo maior (Terça [1])
+    if dia_semana == 1:
         msg = (
-            "🚨 *Aviso de Fim de Escala!*\n\n"
-            f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior"
+            f"🚨 *Aviso de Fim de Escala ({responsavel})!*\n\n"
+            "pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
         )
         enviar_mensagem(msg)
 
-# --- BLOCO DA ANGÉLICA ---
 elif responsavel == "Angélica":
-    # Alerta 1 (Lembrete de Lixo)
-    if dia_semana in [1]:
+    # Lembrete de Lixo (Quinta [3], Sábado [5] e Segunda [0])
+    if dia_semana in [3, 5, 0]:
         msg = (
-            "🗑️ *Lembrete de Lixo*\n\n"
-            f"Atente-se para os lixos do banheiro e cozinha!"
+            f"🗑️ *Lembrete de Lixo ({responsavel})!*\n\n"
+            "Atente-se para os lixos do banheiro e cozinha!"
         )
         enviar_mensagem(msg)
 
-    # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [0, 1]:
+    # Fim de Escala / Lixo maior (Terça [1])
+    if dia_semana == 1:
         msg = (
-            "🚨 *Aviso de Fim de Escala!*\n\n"
-            f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
+            f"🚨 *Aviso de Fim de Escala ({responsavel})!*\n\n"
+            "pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
         )
         enviar_mensagem(msg)
 
-# --- BLOCO DA LUÍSA ---
 elif responsavel == "Luísa":
-    # Alerta 1 (Lembrete de Lixo)
-    if dia_semana in [1]:
+    # Lembrete de Lixo (Quinta [3], Sábado [5] e Segunda [0])
+    if dia_semana in [3, 5, 0]:
         msg = (
-            "🗑️ *Lembrete de Lixo Luísa!*\n\n"
-            f"Atente-se para os lixos do banheiro e cozinha!"
+            f"🗑️ *Lembrete de Lixo ({responsavel})!*\n\n"
+            "Atente-se para os lixos do banheiro e cozinha!"
         )
         enviar_mensagem(msg)
 
-    # Alerta 2 (Fim de Escala / Lixo maior)
-    if dia_semana in [0, 1]:
+    # Fim de Escala / Lixo maior (Terça [1])
+    if dia_semana == 1:
         msg = (
-            "🚨 *Aviso de Fim de Escala!*\n\n"
-            f"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
+            f"🚨 *Aviso de Fim de Escala ({responsavel})!*\n\n"
+            "pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
         )
         enviar_mensagem(msg)
