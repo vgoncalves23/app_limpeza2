@@ -36,7 +36,6 @@ def carregar_dados():
             pass
     return {}
 
-#teste
 
 def salvar_dados(dados):
     """Salva as informações no arquivo JSON."""
@@ -63,8 +62,9 @@ with col2:
 st.markdown("<hr>", unsafe_allow_html=True)
 
 # Configuração da Escala Fixa (de quarta a terça-feira)
-DATA_INICIO_ESCALA = datetime(2026, 10, 21)  # Quarta-feira, 21/10/2026
-PESSOAS_ESCALA = ["Malu", "Angélica", "Luísa"]
+DATA_INICIO_ESCALA = datetime(2026, 10, 21)  # Quarta-feira, 21/10/2026 (Semana 1: Malu)
+# Ordem ajustada conforme a imagem enviada: Malu -> Luísa -> Angélica
+PESSOAS_ESCALA = ["Malu", "Luísa", "Angélica"]
 
 data_hoje = datetime.now()
 
