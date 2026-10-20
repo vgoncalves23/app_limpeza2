@@ -36,6 +36,7 @@ def carregar_dados():
             pass
     return {}
 
+#teste
 
 def salvar_dados(dados):
     """Salva as informações no arquivo JSON."""
