@@ -9,7 +9,8 @@ TELEGRAM_BOT_TOKEN = os.getenv(
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "-5578794876")
 
 DATA_INICIO_ESCALA = datetime(2026, 10, 21)
-PESSOAS_ESCALA = ["Malu", "Angélica", "Luísa"]
+# Sequência ajustada: Malu -> Luísa -> Angélica
+PESSOAS_ESCALA = ["Malu", "Luísa", "Angélica"]
 
 
 def enviar_mensagem(texto):
@@ -41,7 +42,7 @@ responsavel = PESSOAS_ESCALA[semana_idx % len(PESSOAS_ESCALA)]
 print("--- DIAGNÓSTICO DE EXECUÇÃO ---")
 print(f"Data/Hora ajustada (Brasília): {data_hoje}")
 print(f"Dia da semana (0=Seg, 6=Dom): {dia_semana}")
-print(f"Responsável calculado: {responsavel}")
+print(f"Responsável calculated: {responsavel}")
 print("--------------------------------")
 
 
@@ -55,41 +56,7 @@ if dia_semana == 2:
 
 
 # --- BLOCOS DE ALERTAS POR RESPONSÁVEL ---
-if responsavel == "Malu":
-    # Lembrete de Lixo (Quinta [3], Sábado [5] e Segunda [0])
-    if dia_semana in [3, 5, 0]:
-        msg = (
-            f"🗑️ *Lembrete de Lixo ({responsavel})!*\n\n"
-            "Atente-se para os lixos do banheiro e cozinha!"
-        )
-        enviar_mensagem(msg)
-
-    # Fim de Escala / Lixo maior (Terça [1])
-    if dia_semana == 1:
-        msg = (
-            f"🚨 *Aviso de Fim de Escala ({responsavel})!*\n\n"
-            "pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
-        )
-        enviar_mensagem(msg)
-
-elif responsavel == "Angélica":
-    # Lembrete de Lixo (Quinta [3], Sábado [5] e Segunda [0])
-    if dia_semana in [3, 5, 0]:
-        msg = (
-            f"🗑️ *Lembrete de Lixo ({responsavel})!*\n\n"
-            "Atente-se para os lixos do banheiro e cozinha!"
-        )
-        enviar_mensagem(msg)
-
-    # Fim de Escala / Lixo maior (Terça [1])
-    if dia_semana == 1:
-        msg = (
-            f"🚨 *Aviso de Fim de Escala ({responsavel})!*\n\n"
-            "pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
-        )
-        enviar_mensagem(msg)
-
-elif responsavel == "Luísa":
+if responsavel in PESSOAS_ESCALA:
     # Lembrete de Lixo (Quinta [3], Sábado [5] e Segunda [0])
     if dia_semana in [3, 5, 0]:
         msg = (
