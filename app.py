@@ -22,7 +22,7 @@ def enviar_notificacao_telegram(mensagem):
     try:
         response = requests.post(url, json=payload)
         return response.status_code == 200
-    except Exception as e:
+    except Exception:
         return False
 
 
@@ -47,9 +47,7 @@ def salvar_dados(dados):
 
 
 # --- CONFIGURAÇÃO DA PÁGINA ---
-st.set_page_config(
-    page_title="Faxinômetro", page_icon="🧹", layout="centered"
-)
+st.set_page_config(page_title="Faxinômetro", page_icon="🧹", layout="centered")
 
 # Exibindo a imagem centralizada no topo do app
 col1, col2, col3 = st.columns([1, 2, 1])
@@ -95,13 +93,37 @@ responsavel_atual = dados_salvos.get("trocas_semana", {}).get(
     chave_semana, responsavel_padrao
 )
 
-# Checklist persistido
-if "checklist_dados" not in dados_salvos:
-    dados_salvos["checklist_dados"] = [
-        {"nome": "Limpeza geral casa", "feita": False},
-        {"nome": "Limpeza banheiro", "feita": False},
-        {"nome": "Descer lixo maior", "feita": False},
-    ]
+# Estrutura do Checklist com Sub-itens
+CHECKLIST_PADRAO = [
+    {
+        "nome": "Limpeza geral casa",
+        "feita": False,
+        "subitens": [
+            {"nome": "Sofá", "feita": False},
+            {"nome": "Tapete", "feita": False},
+            {"nome": "Tirar poeira dos móveis", "feita": False},
+            {"nome": "Passar pano no chão", "feita": False},
+        ],
+    },
+    {
+        "nome": "Limpeza banheiro",
+        "feita": False,
+        "subitens": [
+            {"nome": "Lavar vaso sanitário", "feita": False},
+            {"nome": "Lavar pia e espelho", "feita": False},
+            {"nome": "Lavar box/chão", "feita": False},
+        ],
+    },
+    {
+        "nome": "Descer lixo maior",
+        "feita": False,
+        "subitens": [],  # Tarefa simples sem sub-itens
+    },
+]
+
+if "checklist_dados" not in dados_salvos or not dados_salvos["checklist_dados"]:
+    dados_salvos["checklist_dados"] = CHECKLIST_PADRAO
+    salvar_dados(dados_salvos)
 
 checklist = dados_salvos["checklist_dados"]
 
@@ -140,13 +162,11 @@ with aba_hoje:
             if st.button("Aplicar Troca e Notificar Telegram"):
                 antigo_resp = responsavel_atual
 
-                # Atualiza e salva no arquivo JSON
                 if "trocas_semana" not in dados_salvos:
                     dados_salvos["trocas_semana"] = {}
                 dados_salvos["trocas_semana"][chave_semana] = nova_pessoa
                 salvar_dados(dados_salvos)
 
-                # Envio automático da notificação para o Telegram
                 msg_troca = (
                     f"🔄 *Troca Automática na Escala de Limpeza!*\n\n"
                     f"• *Anterior:* {antigo_resp}\n"
@@ -163,11 +183,9 @@ with aba_hoje:
         else:
             st.info("A pessoa selecionada já é a responsável atual da semana.")
 
-        # Botão para Restaurar a Escala Padrão se houver uma troca manual ativa
         if tem_troca_manual:
             st.markdown("---")
             if st.button("↩️ Voltar ao Padrão da Escala Semanal"):
-                antigo_resp = responsavel_atual
                 del dados_salvos["trocas_semana"][chave_semana]
                 salvar_dados(dados_salvos)
 
@@ -210,7 +228,19 @@ with aba_escala_semana:
 
     st.table(tabela_escala)
 
-# --- ABA 3: CHECKLIST FIXO ---
+# --- HELPER DE VERIFICAÇÃO DE CHECKLIST ---
+def verificar_tudo_concluido(chk):
+    """Verifica se absolutamente todos os itens e sub-itens foram concluídos."""
+    for item in chk:
+        if not item["feita"]:
+            return False
+        for sub in item.get("subitens", []):
+            if not sub["feita"]:
+                return False
+    return True
+
+
+# --- ABA 3: CHECKLIST COM SUB-SELEÇÕES ---
 with aba_checklist:
     st.subheader("✅ Checklist de Limpeza Semanal")
     st.write(
@@ -219,48 +249,77 @@ with aba_checklist:
 
     st.markdown("---")
 
-    todos_cumpridos_antes = (
-        all(item["feita"] for item in checklist) if checklist else False
-    )
+    tudo_cumprido_antes = verificar_tudo_concluido(checklist)
+    alteracao_feita = False
+    item_alterado_nome = ""
 
     for idx, item in enumerate(checklist):
-        estado_anterior = item["feita"]
+        tem_subitens = len(item.get("subitens", [])) > 0
 
-        status = st.checkbox(
-            item["nome"], value=item["feita"], key=f"chk_{idx}"
+        # Se tiver sub-itens, o estado do pai é determinado pelos filhos
+        if tem_subitens:
+            todos_filhos_marcados = all(sub["feita"] for sub in item["subitens"])
+            item["feita"] = todos_filhos_marcados
+
+        # Exibição do Checkbox Pai
+        pai_status = st.checkbox(
+            f"**{item['nome']}**", value=item["feita"], key=f"chk_pai_{idx}"
         )
 
-        if status and not estado_anterior:
-            checklist[idx]["feita"] = True
-            dados_salvos["checklist_dados"] = checklist
-            salvar_dados(dados_salvos)
+        # Se o usuário clicar no Pai e mudar de estado
+        if pai_status != item["feita"]:
+            item["feita"] = pai_status
+            item_alterado_nome = item["nome"]
+            alteracao_feita = True
 
-            data_hora_conclusao = datetime.now().strftime("%d/%m/%Y às %H:%M")
+            # Sincroniza todos os filhos com o novo estado do pai
+            if tem_subitens:
+                for sub in item["subitens"]:
+                    sub["feita"] = pai_status
 
-            todos_cumpridos_agora = all(t["feita"] for t in checklist)
+        # Se houver sub-itens, renderiza-os recuados (indentados)
+        if tem_subitens:
+            col_space, col_content = st.columns([0.05, 0.95])
+            with col_content:
+                for sub_idx, sub in enumerate(item["subitens"]):
+                    sub_status = st.checkbox(
+                        sub["nome"], value=sub["feita"], key=f"chk_sub_{idx}_{sub_idx}"
+                    )
 
-            if todos_cumpridos_agora and not todos_cumpridos_antes:
-                msg_telegram = (
-                    f"🎉 🎆 *TODOS OS CHECKLISTS CUMPRIDOS!* 🎆 🎉\n\n"
-                    f"🧹 Parabéns *{responsavel_atual}*!\n"
-                    f"Todas as tarefas da escala da semana foram concluídas com sucesso!\n"
-                    f"🗓️ *Data de conclusão:* {data_hora_conclusao}\n\n"
-                    f"✨ Casa limpa e organizada! 👏✨"
-                )
-            else:
-                msg_telegram = (
-                    f"✅ *Checklist Concluído!*\n\n"
-                    f"• *Item:* {item['nome']}\n"
-                    f"• *Responsável da semana:* {responsavel_atual}\n"
-                    f"• *Data de conclusão:* {data_hora_conclusao}"
-                )
+                    if sub_status != sub["feita"]:
+                        sub["feita"] = sub_status
+                        item_alterado_nome = f"{item['nome']} ➔ {sub['nome']}"
+                        alteracao_feita = True
 
-            enviar_notificacao_telegram(msg_telegram)
-            st.toast("Notificação enviada no Telegram!")
-            st.rerun()
+                        # Recalcula o status do pai
+                        item["feita"] = all(s["feita"] for s in item["subitens"])
 
-        elif not status and estado_anterior:
-            checklist[idx]["feita"] = False
-            dados_salvos["checklist_dados"] = checklist
-            salvar_dados(dados_salvos)
-            st.rerun()
+        st.markdown("<hr style='margin: 8px 0;'>", unsafe_allow_html=True)
+
+    # --- PROCESSAMENTO DE MUDANÇAS E NOTIFICAÇÕES ---
+    if alteracao_feita:
+        dados_salvos["checklist_dados"] = checklist
+        salvar_dados(dados_salvos)
+
+        data_hora_conclusao = datetime.now().strftime("%d/%m/%Y às %H:%M")
+        tudo_cumprido_agora = verificar_tudo_concluido(checklist)
+
+        if tudo_cumprido_agora and not tudo_cumprido_antes:
+            msg_telegram = (
+                f"🎉 🎆 *TODOS OS CHECKLISTS CUMPRIDOS!* 🎆 🎉\n\n"
+                f"🧹 Parabéns *{responsavel_atual}*!\n"
+                f"Todas as tarefas e sub-tarefas da escala da semana foram concluídas com sucesso!\n"
+                f"🗓️ *Data de conclusão:* {data_hora_conclusao}\n\n"
+                f"✨ Casa limpa e organizada! 👏✨"
+            )
+        else:
+            msg_telegram = (
+                f"✅ *Checklist Atualizado!*\n\n"
+                f"• *Item:* {item_alterado_nome}\n"
+                f"• *Responsável da semana:* {responsavel_atual}\n"
+                f"• *Data:* {data_hora_conclusao}"
+            )
+
+        enviar_notificacao_telegram(msg_telegram)
+        st.toast("Progresso salvo e notificação enviada!")
+        st.rerun()
