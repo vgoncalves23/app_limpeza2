@@ -187,7 +187,7 @@ with aba_hoje:
 
     st.markdown("---")
     st.info(
-        "🤖 **Alertas Automáticos:** Os lembretes de lixo e término de escala são enviados diretamente no grupo do Telegram todos os dias às 14:00."
+        "🤖 **Alertas Automáticos:** Os lembretes de lixo e término de escala são enviados diretamente no grupo do Telegram todos os dias às 09:00 e 15:00."
     )
 
 # --- ABA 2: ESCALA SEMANAL FIXA ---
