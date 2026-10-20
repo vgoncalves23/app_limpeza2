@@ -98,8 +98,8 @@ responsavel_atual = dados_salvos.get("trocas_semana", {}).get(
 # Checklist persistido
 if "checklist_dados" not in dados_salvos:
     dados_salvos["checklist_dados"] = [
-        {"nome": "Limpeza geral casa", "feita": False},
-        {"nome": "Limpeza banheiro", "feita": False},
+        {"nome": "Limpeza geral casa (Cozinha: Fogão, Microondas, Beirada Janelas, Parede de Fogão, Chão, Bancadas)", "feita": False},
+        {"nome": "Limpeza banheiro (Pia, Vaso, Box, Chão)", "feita": False},
         {"nome": "Descer lixo maior", "feita": False},
     ]
 
