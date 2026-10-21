@@ -94,13 +94,13 @@ if responsavel in PESSOAS_ESCALA:
         enviar_mensagem(msg)
 
     # Fim de Escala / Lixo maior (Terça [1])
-    if dia_semana == 1:
-        msg = (
-            f"🚨 *Aviso de Fim de Escala ({responsavel})!*\n\n"
-            "pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
-        )
-        enviar_mensagem(msg)
-
+   
+    #if dia_semana == 1:
+        #msg = (
+            #f"🚨 *Aviso de Fim de Escala ({responsavel})!*\n\n"
+            #"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
+        #)
+        #enviar_mensagem(msg)
 
         # Fim de Escala / Lixo maior (Terça [1])
     if dia_semana == 1:
