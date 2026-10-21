@@ -95,21 +95,11 @@ if responsavel in PESSOAS_ESCALA:
 
     # Fim de Escala / Lixo maior (Terça [1])
    
-    #if dia_semana == 1:
-        #msg = (
-            #f"🚨 *Aviso de Fim de Escala ({responsavel})!*\n\n"
-            #"pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
-        #)
-        #enviar_mensagem(msg)
-
-        # Fim de Escala / Lixo maior (Terça [1])
     if dia_semana == 1:
         msg = (
-            f"🤖 *Aviso do Faxinômetro!*\n\n"
-            f"Oi, **{responsavel}**! Passando para lembrar que amanhã começa o seu turno na escala de limpeza! 🧹✨\n\n"
-            f"*Angélica* vai te explicar certinho os detalhes de como eu funciono. Fique de olho!"
-            f"*https://applimpeza2-hnzqehncsawhavvrr8cbag.streamlit.app/*"
+            f"🚨 *Aviso de Fim de Escala ({responsavel})!*\n\n"
+            "pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
         )
-        #enviar_mensagem(msg)
+        enviar_mensagem(msg)
 
-        enviar_foto("escala.png", legenda=msg)
+        # Fim de Escala / Lixo maior (Terça [1])
