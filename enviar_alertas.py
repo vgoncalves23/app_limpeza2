@@ -72,3 +72,13 @@ if responsavel in PESSOAS_ESCALA:
             "pipipipi 🚨🚨🚨🚨🚨 desça com o lixo maior!"
         )
         enviar_mensagem(msg)
+
+
+        # Fim de Escala / Lixo maior (Terça [1])
+    if dia_semana == 1:
+        msg = (
+            f"🤖 *Aviso do Faxinômetro!*\n\n"
+            f"Oi, **{responsavel}**! Passando para lembrar que amanhã começa o seu turno na escala de limpeza! 🧹✨\n\n"
+            f"Minha boss *Angélica* vai te explicar certinho os detalhes de como eu funciono. Fique de olho!"
+        )
+        enviar_mensagem(msg)
