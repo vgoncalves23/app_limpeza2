@@ -111,4 +111,4 @@ if responsavel in PESSOAS_ESCALA:
         )
         enviar_mensagem(msg)
 
-        enviar_foto("escala.jpg", legenda=msg)
+        enviar_foto("escala.png", legenda=msg)
