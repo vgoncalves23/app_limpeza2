@@ -12,6 +12,34 @@ DATA_INICIO_ESCALA = datetime(2026, 10, 21)
 # Sequência ajustada: Malu -> Luísa -> Angélica
 PESSOAS_ESCALA = ["Malu", "Luísa", "Angélica"]
 
+def enviar_foto(caminho_imagem, legenda=""):
+    """Envia uma imagem acompanhada de legenda para o Telegram."""
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendPhoto"
+    
+    if not os.path.exists(caminho_imagem):
+        print(f"❌ Imagem não encontrada no caminho: {caminho_imagem}")
+        # Envia apenas a mensagem de texto caso a imagem não exista
+        return enviar_mensagem(legenda)
+
+    try:
+        with open(caminho_imagem, "rb") as foto:
+            payload = {
+                "chat_id": TELEGRAM_CHAT_ID,
+                "caption": legenda,
+                "parse_mode": "Markdown",
+            }
+            files = {"photo": foto}
+            response = requests.post(url, data=payload, files=files)
+            
+            if response.status_code == 200:
+                print("✅ Foto e mensagem enviadas com sucesso para o Telegram!")
+            else:
+                print(f"❌ Erro ao enviar foto ({response.status_code}): {response.text}")
+            return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Erro ao processar envio da foto: {e}")
+        return False
+
 
 def enviar_mensagem(texto):
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -82,3 +110,5 @@ if responsavel in PESSOAS_ESCALA:
             f"*Angélica* vai te explicar certinho os detalhes de como eu funciono. Fique de olho!"
         )
         enviar_mensagem(msg)
+
+        enviar_foto("escala.jpg", legenda=msg)
