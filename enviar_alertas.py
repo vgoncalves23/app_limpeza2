@@ -79,6 +79,6 @@ if responsavel in PESSOAS_ESCALA:
         msg = (
             f"🤖 *Aviso do Faxinômetro!*\n\n"
             f"Oi, **{responsavel}**! Passando para lembrar que amanhã começa o seu turno na escala de limpeza! 🧹✨\n\n"
-            f"Minha boss *Angélica* vai te explicar certinho os detalhes de como eu funciono. Fique de olho!"
+            f"*Angélica* vai te explicar certinho os detalhes de como eu funciono. Fique de olho!"
         )
         enviar_mensagem(msg)
