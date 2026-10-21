@@ -66,7 +66,8 @@ DATA_INICIO_ESCALA = datetime(2026, 10, 21)  # Quarta-feira, 21/10/2026 (Semana 
 # Ordem ajustada conforme a imagem enviada: Malu -> Luísa -> Angélica
 PESSOAS_ESCALA = ["Malu", "Luísa", "Angélica"]
 
-data_hoje = datetime.now()
+# Ajuste de data e hora para o Horário de Brasília (UTC-3)
+data_hoje = datetime.utcnow() - timedelta(hours=3)
 
 # Cálculo de semanas decorridas
 dias_decorridos = (data_hoje - DATA_INICIO_ESCALA).days
@@ -236,7 +237,8 @@ with aba_checklist:
             dados_salvos["checklist_dados"] = checklist
             salvar_dados(dados_salvos)
 
-            data_hora_conclusao = datetime.now().strftime("%d/%m/%Y às %H:%M")
+            # Ajustado para considerar o Horário de Brasília (UTC-3)
+            data_hora_conclusao = (datetime.utcnow() - timedelta(hours=3)).strftime("%d/%m/%Y às %H:%M")
 
             todos_cumpridos_agora = all(t["feita"] for t in checklist)
 

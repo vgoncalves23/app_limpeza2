@@ -110,6 +110,6 @@ if responsavel in PESSOAS_ESCALA:
             f"*Angélica* vai te explicar certinho os detalhes de como eu funciono. Fique de olho!"
             f"*https://applimpeza2-hnzqehncsawhavvrr8cbag.streamlit.app/"
         )
-        enviar_mensagem(msg)
+        #enviar_mensagem(msg)
 
         enviar_foto("escala.png", legenda=msg)
